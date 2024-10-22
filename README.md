@@ -32,6 +32,3 @@ The current progess listed as below:
  - [ ] Show score with configuration.
  - [ ] Digital Signature File.
  - [ ] Automatic tests.
-
-
-Progress: 50%
