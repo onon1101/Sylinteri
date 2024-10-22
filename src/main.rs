@@ -1,22 +1,24 @@
 mod googletest;
+use googletest::TestReport;
 
-use std::fs;
+use clap::Parser;
 use serde::{Deserialize, Serialize};
+use std::fs;
 
-fn main() -> std::io::Result<()>{
-    let data: String = fs::read_to_string("report.json")
-        .expect("Should have been able to read the file");
+/// Sylinteri is an application to enhance GoogleTest result with add score calculation.
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// FileName of googletest to parser
+    #[arg(short, long)]
+    filename: String,
+}
 
-    let data: &str = &data[..];
+fn main() -> std::io::Result<()> {
+    let args = Args::parse();
+    let filename = args.filename;
 
-    let result: googletest::TestResult = serde_json::from_str(data)?;
+    TestReport::new(&filename).print_result();
 
-    // println!("{:?}", result.tests);
-
-    googletest::print_test_results(result.tests, &result.testsuites[0].name, &result.testsuites[0].testsuite);
-
-    println!("[----------] 11 tests from TICKET_SYSTEM_TEST (0 s)
-[----------] Global test environment tear-down.
-[==========] Running 11 tests from 11 test suites (0 s total)");
     Ok(())
 }
