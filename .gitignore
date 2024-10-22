@@ -15,4 +15,4 @@ build/
 .cache/
 
 SYLINTERI
-test_report.json
+# test_report.json
