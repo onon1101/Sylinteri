@@ -1,11 +1,14 @@
 #ifndef TEST_HPP
 #define TEST_HPP
 
-#include "spdlog/spdlog.h"
+#include <cmath>
 #include <iostream>
 #include <string>
 
+#include "spdlog/spdlog.h"
 #include <nlohmann/json.hpp>
+
+#include "color.hpp"
 
 using json = nlohmann::json;
 
@@ -22,9 +25,9 @@ private:
     TestResult result;
     double time_in_second;
     std::string error;
-
+    double test_score = 0;
 public:
-    static std::vector<Test> convert_json_array_to_test_vector(json::array_t array){
+    static std::vector<Test> convert_json_array_to_test_vector(json::array_t array, double test_score){
         std::vector<Test> tests;
 
         for(auto element : array){
@@ -42,7 +45,8 @@ public:
                 name, 
                 error == "" ? TestResult::OK : TestResult::FAILED,
                 time_in_second,
-                error
+                error,
+                test_score
             );
 
             tests.push_back(test);
@@ -51,14 +55,27 @@ public:
         return tests;
     }
 
-    Test(std::string class_name, std::string name, TestResult result, double time_in_second, std::string error) : 
+    static double get_total_score_by_test_vector(std::vector<Test> &tests){
+        double score = 0;
+        for(Test test : tests){
+            score += test.get_test_score() * test.is_passed();
+        }
+        return score;
+    }
+
+    Test(std::string class_name, std::string name, TestResult result, double time_in_second, std::string error, double test_score) : 
         class_name(class_name), 
         name(name), 
         result(result), 
         time_in_second(time_in_second), 
-        error(error) 
+        error(error),
+        test_score(test_score)
     {
 
+    }
+
+    double get_test_score(){
+        return test_score;
     }
 
     bool is_passed(){
@@ -70,16 +87,22 @@ public:
     }
 
     void print_result(){
-        std::cout << "[ RUN      ] " << get_test_name() << std::endl;
+        // std::cout << GREEN << "[ RUN      ] " << RESET << get_test_name() << std::endl;
         
         if(!is_passed()){
+            std::cout << RED << "[  FAILED  ] " << RESET; 
+            if(test_score != 0){
+                std::cout << RED << "[ " << std::round(test_score * is_passed() * 100) / 100 << " pt ] " << RESET;
+            }
+            std::cout << get_test_name() << " (" << time_in_second << " s)" << std::endl;; 
             std::cout << error << std::endl;
-            std::cout << "[  FAILED  ] "; 
         }else{
-            std::cout << "[       OK ] ";
+            std::cout << GREEN << "[    OK    ] " << RESET;
+            if(test_score != 0){
+                std::cout << GREEN << "[ " << std::round(test_score * is_passed() * 100) / 100 << " pt ] " << RESET;
+            }
+            std::cout << get_test_name() << " (" << time_in_second << " s)" << std::endl;
         }
-
-        std::cout << get_test_name() << " (" << time_in_second << " s)" << std::endl;
     }
 };
 

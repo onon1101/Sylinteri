@@ -6,6 +6,8 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+#include "color.hpp"
+#include "score.hpp"
 #include "test_suite.hpp"
 
 using json = nlohmann::json;
@@ -20,16 +22,26 @@ public:
         
     }
 
+    double get_total_score(){
+        double value = 0;
+
+        for(TestSuite test_suite : test_suites){
+            value += test_suite.get_score();
+        }
+
+        return value;
+    }
+
     void print_result(){
-        std::cout << "[==========]" << " " << "Running " << tests << " tests from " << tests << " test suites" << std::endl;
-        std::cout << "[----------]" << " " << "Global test environment set-up." << std::endl;
+        std::cout << GREEN << "[==========]" << RESET << " " << "Running " << tests << " tests from " << tests << " test suites" << std::endl;
+        std::cout << GREEN << "[----------]" << RESET << " " << "Global test environment set-up." << std::endl;
         for(TestSuite test_suite : test_suites){
             test_suite.print_header();
             test_suite.print_result();
             test_suite.print_footer();
         }
-        std::cout << "[----------]" << " " << "Global test environment tear-down." << std::endl;
-        std::cout << "[==========]" << " " << "Running " << tests << " tests from " << tests << " test suites" << " (" << time_in_second << " s total)" << std::endl;
+        std::cout << GREEN << "[----------]" << RESET << " " << "Global test environment tear-down." << std::endl;
+        std::cout << GREEN << "[==========]" << RESET << " " << "Running " << tests << " tests from " << tests << " test suites" << " (" << time_in_second << " s total)" << std::endl;
     }
 };
 
