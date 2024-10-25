@@ -28,7 +28,7 @@ The current progess listed as below:
  - [x] Read the report file and parse the content.
  - [x] Have `Report` class to transform content into class.
  - [x] Output GoogleTest result based on report file.
- - [ ] Input score configuration.
- - [ ] Show score with configuration.
+ - [x] Input score configuration.
+ - [x] Show score with configuration.
  - [ ] Digital Signature File.
  - [ ] Automatic tests.
