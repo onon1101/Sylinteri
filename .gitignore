@@ -15,4 +15,6 @@ build/
 .cache/
 
 SYLINTERI
-# test_report.json
+.ninja_deps
+.ninja_log
+build.ninja

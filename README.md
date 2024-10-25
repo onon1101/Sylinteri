@@ -6,7 +6,7 @@ Sylinteri is an application to enhance GoogleTest result with add score calculat
 
 ```
 cmake .
-make -j 10
+cmake --build .
 ```
 
 ## Execute with Sylinteri Executable
