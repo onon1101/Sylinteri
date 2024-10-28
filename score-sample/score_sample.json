@@ -1,6 +1,10 @@
-[
-    {
-        "testsuite": "TICKET_SYSTEM_TEST",
-        "score": 100
-    }
-]
+{
+    "homework_name": "HW2",
+    "semester": "2024f",
+    "testsuites": [
+        {
+            "testsuite": "TICKET_SYSTEM_TEST",
+            "score": 100
+        }
+    ]
+}

@@ -4,10 +4,12 @@
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 #include <string>
+#include <ctime>
 
 #include "report.hpp"
 #include "test_suite.hpp"
 #include "score.hpp"
+#include "postman.hpp"
 
 using json = nlohmann::json;
 
@@ -22,6 +24,11 @@ int main(int argc, char* argv[]){
         return -1;
     }
 
+    if(argc < 4){
+        spdlog::error("Need student ID. Exit.");
+        return -1;
+    }
+
     std::string report_file = std::string(argv[1]);
 
     spdlog::info("Got Google report file. [{0}]", report_file);
@@ -29,6 +36,10 @@ int main(int argc, char* argv[]){
     std::string score_configuration_file = std::string(argv[2]);
 
     spdlog::info("Got score configuration file. [{0}]", score_configuration_file);
+
+    std::string student_id = std::string(argv[3]);
+
+    spdlog::info("Got student ID: {0}", student_id);
 
     std::ifstream report_f(report_file, std::ios::in);
 
@@ -45,10 +56,15 @@ int main(int argc, char* argv[]){
     }
 
     Score score;
+    std::string homework_name = "";
+    std::string semester = "";
 
     try {
         json score_configuration_json = json::parse(score_cnf_f);
-        json::array_t score_cnf_array = score_configuration_json.get<json::array_t>();
+        json::array_t score_cnf_array = score_configuration_json["testsuites"].get<json::array_t>();
+        
+        homework_name = score_configuration_json.at("homework_name").get<std::string>();
+        semester = score_configuration_json.at("semester").get<std::string>();
 
         score = Score(
             ScoreItem::convert_score_cnf_json_array_to_scoreitem_vector(score_cnf_array)
@@ -60,6 +76,8 @@ int main(int argc, char* argv[]){
         spdlog::error("Parse error on score configuration file. Exit.");
         spdlog::error("Error: {0}", e.what());
     }
+
+    double result = 0.0;
 
     try {
 
@@ -81,11 +99,23 @@ int main(int argc, char* argv[]){
 
         std::cout << std::endl;
 
-        spdlog::info("Total score: {0}", std::round(report.get_total_score() * 100) / 100);
+        result = std::round(report.get_total_score() * 100) / 100.0;
+
+        spdlog::info("Total score: {0}", result);
 
     } catch (json::parse_error e){
         spdlog::error("Parse error on report file. Exit.");
         spdlog::error("Error: {0}", e.what());
     }
 
+    uint32_t submitted_at = time(0);
+
+    spdlog::info("Preparing POST data...");
+    spdlog::info(" - Student ID: {0}", student_id);
+    spdlog::info(" - Homework Name: {0}", homework_name);
+    spdlog::info(" - Semester: {0}", semester);
+    spdlog::info(" - Submitted At: {0}", submitted_at);
+    spdlog::info(" - Grade: {0}", result);
+
+    post_result(student_id, homework_name, semester, submitted_at, result);
 }

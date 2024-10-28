@@ -7,6 +7,11 @@ set(CMAKE_CXX_FLAGS_DEBUG "-Werror -Og")
 
 include(FetchContent)
 
+find_package(CURL 7.81.0 EXACT REQUIRED)
+
+message("curl libs: ${CURL_LIBRARIES}")
+message("curl dirs: ${CURL_INCLUDE_DIRS}")
+
 FetchContent_Declare(json
     GIT_REPOSITORY https://github.com/nlohmann/json
     GIT_TAG v3.11.3
@@ -30,3 +35,4 @@ set(SRC
 add_executable(SYLINTERI "${SRC}")
 target_include_directories(SYLINTERI PRIVATE ${JSON_LIBRARIES})
 target_include_directories(SYLINTERI PRIVATE ${SPDLOG_LIBRARIES})
+target_link_libraries(SYLINTERI PRIVATE ${CURL_LIBRARIES})
