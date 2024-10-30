@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-namespace PROJECT
+namespace PROJECT_NAME
 {
     auto print_project_name() -> void {
         printf("   ______              __     _               _                       _\n");

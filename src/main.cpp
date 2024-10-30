@@ -11,12 +11,12 @@
 #include "score.hpp"
 #include "postman.hpp"
 
-#include "ProjectName.h"
+#include "project_name.h"
 
 using json = nlohmann::json;
 
 int main(int argc, char* argv[]){
-    PROJECT::print_project_name();
+    PROJECT_NAME::print_project_name();
 
     if(argc < 2){
         spdlog::error("Need report file. Exit.");
